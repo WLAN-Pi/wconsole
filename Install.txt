@@ -20,13 +20,13 @@ the package, perform the following steps:
     apt-get update
     apt-get install ser2net
 
-Once ser2net is installed, copy the supplied rconsole gzipped archive to the WLANPi to the /etc 
+Once ser2net is installed, copy the supplied wconsole gzipped archive to the WLANPi to the /etc 
 directory of the WLANPI (see "bundle" github folder). Extract the files from the archive using
 the command:
 
  tar xvfz wconsole.tar.gz
 
-Change to the newly created directory /etc/rconsole:
+Change to the newly created directory /etc/wconsole:
 
  cd /etc/wconsole
 
@@ -34,7 +34,7 @@ Run the installation script to configure hostapd, ser2net and open up port 9600 
 
  sudo ./wconsole_switcher install
 
-Flip the WLANPi in to rconsole mode:
+Flip the WLANPi in to wconsole mode:
 
  sudo ./wconsole_switcher on
 
@@ -44,7 +44,7 @@ on channel 1. Join the SSID and use the PSK: Password1.
 Once you have joined the SSID, open a telnet session to 192.168.42.1:9600. This will provide access
 to the serial console cable plugged in to the USB port.
 
-To switch out of rconsole mode, connect the WLANPi to a network via the Ethernet port, SSH to it 
+To switch out of wconsole mode, connect the WLANPi to a network via the Ethernet port, SSH to it 
 and run the command: sudo /etc/wconsole/wconsole_switcher off
 
 
