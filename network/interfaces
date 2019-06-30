@@ -1,0 +1,18 @@
+source /etc/network/interfaces.d/*
+
+# Wired adapter #1
+allow-hotplug eth0
+no-auto-down eth0
+iface eth0 inet dhcp
+
+# Wireless adapter #1
+allow-hotplug wlan0
+iface wlan0 inet static
+address 192.168.42.1
+netmask 255.255.255.224
+hostapd /etc/hostapd.conf
+
+# Local loopback
+auto lo
+iface lo inet loopback
+

@@ -1,0 +1,45 @@
+
+INSTALL.txt
+==========
+
+PROOF OF CONCEPT SCRIPTS FOR WCONSOLE UTILITY
+---------------------------------------------
+
+To provide a wireless remote serial port, you will need:
+
+ - a supported wireless adapter plugged in to one port of the WLANPi (e.g. CF-912ac)
+ - a compatable USB to serial cable in the other USB port (e.g. Prolific Technology, Inc. PL2303 Serial Port)
+
+Before attempting to use WCONSOLE, you must install the ser2net packge on your WLANPi. To install the package, perform the following steps:
+
+1. Connect your WLANPI via the Ethernet port to a network with Internet access
+2. SSH to the WLANPi and login
+3. execute the following commands:
+    apt-get update
+    apt-get install ser2net
+
+Once ser2net is installed, copy the supplied rconsole gzipped archive to the WLANPi to the /etc directory of the WLANPI. Extract the files from the archive using the command:
+
+ tar xvfz wconsole.tar.gz
+
+Change to the newly created directory /etc/rconsole:
+
+ cd /etc/wconsole
+
+Run the installation script to configure hostapd, ser2net and open up port 9600 in ufw:
+
+ sudo ./wconsole_switcher install
+
+Flip the WLANPi in to rconsole mode:
+
+ sudo ./wconsole_switcher on
+
+At this point, the WLANPi will reboot. Following the reboot, an SSID of WCONSOLE will be available on channel 1. Join the SSID and use the PSK: Password1.
+
+Once you have joined the SSID, open a telnet session to 192.168.42.1:9600. This will provide access to the serial console cable plugged in to the USB port.
+
+To switch out of rconsole mode, connect the WLANPi to a network via the Ethernet port, SSH to it and run the command: sudo /etc/wconsole/wconsole_switcher off
+
+
+ 
+

@@ -1,0 +1,137 @@
+#! /bin/bash
+#
+# wconsole_switcher       script to switch wconsole on/off
+#
+# Written by Nigel Bowden <wifinigel@gmail.com>.
+#
+# Hitsory:
+#
+# v0.01 - 28th June 2019 - Added more ports for various serial speeds
+# v0.02 - 29th June 2019 - Changed name to wconsole
+# v0.03 - 30th June 2019 - Updated to add/remove FW rules at switch time 
+#         (not during install)
+
+set -e
+
+NAME=wconsole_switcher
+DESC="Script to switch wconsole on/off"
+STATUS_FILE="/etc/wconsole/wconsole.on"
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+###############################################################################
+#
+# Activate wconsole:
+#
+# 1. Backup various existing files to allow restoration when wconsole
+#    deactivated
+# 2. Remove a number of existing files that need to be replaced
+# 3. Create links from deleted file locations to wconsole config files
+# 4. Update ufw to allow tcp ports through that may be used for access
+# 5. Create status file to indicate wconsole is active
+# 6. Reboot the wlanpi to ensure clean activation
+#
+###############################################################################
+wconsole_on () {
+  echo "Enabling wconsole..."
+  cp /etc/default/isc-dhcp-server /etc/default/isc-dhcp-server.wcon
+  cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.wcon
+  cp /etc/network/interfaces /etc/network/interfaces.wcon
+  rm /etc/default/isc-dhcp-server
+  rm /etc/dhcp/dhcpd.conf
+  rm /etc/network/interfaces
+  ln -s /etc/wconsole/default/isc-dhcp-server /etc/default/isc-dhcp-server 
+  ln -s /etc/wconsole/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
+  ln -s /etc/wconsole/network/interfaces /etc/network/interfaces
+  ufw allow 2400/tcp
+  ufw allow 4800/tcp
+  ufw allow 9600/tcp
+  ufw allow 19200/tcp
+  touch $STATUS_FILE
+  echo "WLANPi will now reboot"
+  sleep 1
+  reboot
+}
+
+###############################################################################
+#
+# Deactivate wconsole:
+#
+# 1. Remove links created during activation
+# 2. Restore config files backed up during activation
+# 3. Remove firewall rules added during activation
+# 4. Remove status file to indicate wconsole no longer active
+# 5. Reboot wlanpi to provide clean rstoration of services
+#
+###############################################################################
+wconsole_off () {
+  echo "Disabling wconsole..."
+  unlink /etc/default/isc-dhcp-server
+  unlink /etc/dhcp/dhcpd.conf
+  unlink /etc/network/interfaces
+  cp /etc/default/isc-dhcp-server.wcon /etc/default/isc-dhcp-server
+  cp /etc/dhcp/dhcpd.conf.wcon /etc/dhcp/dhcpd.conf
+  cp /etc/network/interfaces.wcon /etc/network/interfaces
+  ufw delete allow 2400/tcp
+  ufw delete allow 4800/tcp
+  ufw delete allow 9600/tcp
+  ufw delete allow 19200/tcp
+  echo "WLANPi will now reboot"
+  if [ -e "$STATUS_FILE" ]; then
+    rm $STATUS_FILE
+  fi
+  sleep 1
+  reboot
+}
+
+install () {
+  echo "The config files for ser2net and hostapd will now be copied to their correct location."
+  echo "If either of these packages are not installed, please install them and re-run this command."
+  sleep 1
+  echo "Copying /etc/conf/wconsole/ser2net.conf to /etc/ser2net.conf"
+  cp /etc/wconsole/conf/ser2net.conf /etc/ser2net.conf
+  sleep 1
+  echo "Copying /etc/wconsole/conf/hostapd.conf to /etc/hostapd.conf"
+  cp /etc/wconsole/conf/hostapd.conf /etc/hostapd.conf
+  sleep 1
+  echo "Config files copied."
+  sleep 1
+  echo "Config complete."
+}
+
+status () {
+  if [ -e "$STATUS_FILE" ]; then
+    echo "wconsole is currently enabled"
+    exit 0
+  else
+    echo "wconsole is currently disabled"
+    exit 0
+  fi
+
+}
+
+case "$1" in
+  on)
+        wconsole_on
+        ;;
+  off)
+        wconsole_off
+        ;;
+  status)
+        status
+        ;;
+  install)
+        install
+        ;;
+  *)
+        N=/etc/wconsole/$NAME
+        echo "Usage: $N {on|off|install|status}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
+
