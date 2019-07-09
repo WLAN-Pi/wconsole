@@ -1,4 +1,4 @@
-# wconsole
+# Wi-Fi Console
 *Turn your WLANPi in to a wireless serial console cable*
 
 It can be annoying to have to sit in an equipment room to use the serial console port on an item of networking equipment. This project allows you to use an WLANPi to connect to your serial console cable via a Wi-Fi link while sat in the comfort of a nearby office, rather than sat with your laptop on the equipment room floor :) 
@@ -14,7 +14,7 @@ To provide a wireless console serial port using your WLANPi, you will need:
  - A (compatable) USB to serial cable connected to one the other WLANPi USB port (e.g. Prolific Technology, Inc. PL2303 Serial Port)
  - WLANPi distribution v1.6.1 or later installed on the WLANPi (https://github.com/WLAN-Pi/wlanpi/releases)
 
-Before attempting to use wconsole, you must ensure you have the correct software packages installed on your WLANPi. The packages used are:
+Before attempting to use Wi-Fi Console, you must ensure you have the correct software packages installed on your WLANPi. The packages used are:
 
  - *isc-dhcp-server* (installed as part of the standard distribution)
  - *hostapd* (installed as part of the standard distribution)
@@ -61,23 +61,23 @@ Change to the newly created directory /etc/wconsole:
  sudo cd /etc/wconsole
 ```
 
-Run the installation script to automatically configure hostapd, ser2net isc-dhcp-server files and set the required ufw ports for "wconsole" mode operation (note this is a one-time activity):
+Run the installation script to automatically configure hostapd, ser2net isc-dhcp-server files and set the required ufw ports for "Wi-Fi Console" mode operation (note this is a one-time activity):
 
 ```
  sudo ./wconsole_switcher install
 ```
 
-As there are quite a few networking changes we need to make for wconsole to operate correctly, we need to flip the WLANPi in to a completely new mode of operation that uses a different network configuration. The 'wconsole_switcher' script is used to switch between the usual "classic" mode of operation and the "wconsole" mode of operation. 
+As there are quite a few networking changes we need to make for Wi-Fi Console to operate correctly, we need to flip the WLANPi in to a completely new mode of operation that uses a different network configuration. The 'wconsole_switcher' script is used to switch between the usual "classic" mode of operation and the "Wi-Fi Console" mode of operation. 
 
-When moving to the "wconsole" mode, various configuration files are changed on the WLANPi, with the orignal networking files being preserved to allow restoration to the original ("classic" mode) configuration. 
+When moving to the "Wi-Fi Console" mode, various configuration files are changed on the WLANPi, with the orignal networking files being preserved to allow restoration to the original ("classic" mode) configuration. 
 
 When moving back to the original "classic" mode, all changed files are restored to their original state. 
 
 When moving between modes, the WLANPi will reboot to ensure that all new network configuration starts cleanly. 
 
-## Enabling Wconsole Mode
+## Enabling Wi-Fionsole Mode
 
-To flip the WLANPi in to "wconsole" mode, SSH to the WLANPi and excute the following command:
+To flip the WLANPi in to "Wi-Fi Console" mode, SSH to the WLANPi and excute the following command:
 
 ```
  sudo /etc/wconsole/wconsole_switcher on
@@ -96,15 +96,15 @@ In addition to the serial port configuration on TCP 9600 the follwoing ports are
 
 (If you wish to experiment yourself with the network port allocations, see the /etc/wconsole/conf/ser2net.conf file)
 
-## Exiting Wconsole Mode
+## Exiting Wi-Fi Console Mode
 
-To switch out of rconsole mode, SSH to the WLANPi using network address 192.168.42.1 (while connected to the wconsole SSID, using standrad port 22) and run the command: 
+To switch out of rconsole mode, SSH to the WLANPi using network address 192.168.42.1 (while connected to the Wi-Fi Console SSID, using standard port 22) and run the command: 
 
 ```
  sudo /etc/wconsole/wconsole_switcher off
 ```
 
-When this command is executed, the original ("classic" mode) networking configuration files will be restored and the WLANPi will reboot. After the reboot, the WLANPi will operatw as it did before the switch to "wconsole" mode.
+When this command is executed, the original ("classic" mode) networking configuration files will be restored and the WLANPi will reboot. After the reboot, the WLANPi will operatw as it did before the switch to "Wi-Fi Console" mode.
 
 ## Configurations Options
 
@@ -126,10 +126,10 @@ Change the following fields to your desired values:
 
 Once you have made your changes, hit Ctrl-X to exit and hit "Y" to save the changes when prompted.
 
-Next, flip the WLANPi back in to "wconsole" mode as described in previous sections. After the accompanying reboot, the WLANPi should operate using the newly configured parameters.
+Next, flip the WLANPi back in to "Wi-Fi Console" mode as described in previous sections. After the accompanying reboot, the WLANPi should operate using the newly configured parameters.
 
-(Note: if you make these changes while in "wconsole" mode, they will not take effect. You must start in "classic" mode, make the updates, then switch to "wconsole" mode)
+(Note: if you make these changes while in "Wi-Fi Console" mode, they will not take effect. You must start in "classic" mode, make the updates, then switch to "Wi-Fi Console" mode)
 
 ## Alternative Switching Option
 
-If you feel brave, the [wlanpi-nanohat-oled](https://github.com/WLAN-Pi/wlanpi-nanohat-oled) project provides an easy option to enable/disable wconsole mode via a front panel menu system. Take a look at the project page to find out more details.
+If you feel brave, the [wlanpi-nanohat-oled](https://github.com/WLAN-Pi/wlanpi-nanohat-oled) project provides an easy option to enable/disable Wi-Fi Console mode via a front panel menu system. Take a look at the project page to find out more details.
