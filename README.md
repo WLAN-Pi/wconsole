@@ -75,7 +75,7 @@ When moving back to the original "classic" mode, all changed files are restored 
 
 When moving between modes, the WLANPi will reboot to ensure that all new network configuration starts cleanly. 
 
-## Enabling Wi-Fionsole Mode
+## Enabling Wi-Fi Console Mode
 
 To flip the WLANPi in to "Wi-Fi Console" mode, SSH to the WLANPi and excute the following command:
 
