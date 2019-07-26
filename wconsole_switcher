@@ -1,20 +1,25 @@
 #! /bin/bash
 #
-# wconsole_switcher       script to switch wconsole on/off
+# wconsole_switcher - script to switch wconsole on/off
+#                     (usually called from the WLANPi menu system)    
 #
 # Written by Nigel Bowden <wifinigel@gmail.com>.
 #
-# Hitsory:
+# History:
 #
 # v0.01 - 28th June 2019 - Added more ports for various serial speeds
 # v0.02 - 29th June 2019 - Changed name to wconsole
 # v0.03 - 30th June 2019 - Updated to add/remove FW rules at switch time 
 #         (not during install)
+# v0.04 - 25th July 2019 - Updated to remove install option
+#                        - Added file checks before file copy/del operations
+#
 
 set -e
 
 NAME=wconsole_switcher
 DESC="Script to switch wconsole on/off"
+VERSION=0.04
 STATUS_FILE="/etc/wconsole/wconsole.on"
 
 if [[ $EUID -ne 0 ]]; then
@@ -26,30 +31,51 @@ fi
 #
 # Activate wconsole:
 #
-# 1. Backup various existing files to allow restoration when wconsole
+# 1. Backup various existing files to allow restoration when Wi-Fi console
 #    deactivated
 # 2. Remove a number of existing files that need to be replaced
-# 3. Create links from deleted file locations to wconsole config files
+# 3. Create links from deleted file locations to Wi-Fi console config files
 # 4. Update ufw to allow tcp ports through that may be used for access
-# 5. Create status file to indicate wconsole is active
+# 5. Create status file to indicate Wi-Fi console is active
 # 6. Reboot the wlanpi to ensure clean activation
 #
 ###############################################################################
 wconsole_on () {
-  echo "Enabling wconsole..."
+  echo "Enabling Wi-Fi console..."
+  # Backup files
   cp /etc/default/isc-dhcp-server /etc/default/isc-dhcp-server.wcon
   cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.wcon
   cp /etc/network/interfaces /etc/network/interfaces.wcon
+  # These files may or may not exist
+  if [ -e /etc/ser2net.conf ]; then
+    cp /etc/ser2net.conf /etc/ser2net.conf.wcon
+  fi
+  if [ -e /etc/hostapd.conf ]; then
+    cp /etc/hostapd.conf /etc/hostapd.conf.wcon
+  fi
+  # Remove existing files
   rm /etc/default/isc-dhcp-server
   rm /etc/dhcp/dhcpd.conf
   rm /etc/network/interfaces
+  # These files may or may not exist
+  if [ -e /etc/ser2net.conf ]; then
+    rm /etc/ser2net.conf
+  fi
+  if [ -e /etc/hostapd.conf ]; then
+    rm /etc/hostapd.conf
+  fi
+  # Link to files in wconsole
   ln -s /etc/wconsole/default/isc-dhcp-server /etc/default/isc-dhcp-server 
   ln -s /etc/wconsole/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
   ln -s /etc/wconsole/network/interfaces /etc/network/interfaces
+  ln -s /etc/wconsole/conf/ser2net.conf /etc/ser2net.conf
+  ln -s /etc/wconsole/conf/hostapd.conf /etc/hostapd.conf
+  # Open up FW 
   ufw allow 2400/tcp
   ufw allow 4800/tcp
   ufw allow 9600/tcp
   ufw allow 19200/tcp
+  # Signal that wconsole active
   touch $STATUS_FILE
   echo "WLANPi will now reboot"
   sleep 1
@@ -63,18 +89,30 @@ wconsole_on () {
 # 1. Remove links created during activation
 # 2. Restore config files backed up during activation
 # 3. Remove firewall rules added during activation
-# 4. Remove status file to indicate wconsole no longer active
-# 5. Reboot wlanpi to provide clean rstoration of services
+# 4. Remove status file to indicate Wi-Fi console no longer active
+# 5. Reboot wlanpi to provide clean restoration of services
 #
 ###############################################################################
 wconsole_off () {
-  echo "Disabling wconsole..."
+  echo "Disabling Wi-Fi console..."
+  # Remove sym links to wconsole
   unlink /etc/default/isc-dhcp-server
   unlink /etc/dhcp/dhcpd.conf
   unlink /etc/network/interfaces
+  unlink /etc/ser2net.conf
+  unlink /etc/hostapd.conf
+  # Restore old files
   cp /etc/default/isc-dhcp-server.wcon /etc/default/isc-dhcp-server
   cp /etc/dhcp/dhcpd.conf.wcon /etc/dhcp/dhcpd.conf
   cp /etc/network/interfaces.wcon /etc/network/interfaces
+  # These files may or may not exist
+  if [ -e /etc/ser2net.conf.wcon ]; then
+    cp /etc/ser2net.conf.wcon /etc/ser2net.conf
+  fi
+  if [ -e /etc/hostapd.conf.wcon ]; then
+    cp /etc/hostapd.conf.wcon /etc/hostapd.conf
+  fi
+  # Close ports on FW
   ufw delete allow 2400/tcp
   ufw delete allow 4800/tcp
   ufw delete allow 9600/tcp
@@ -85,21 +123,6 @@ wconsole_off () {
   fi
   sleep 1
   reboot
-}
-
-install () {
-  echo "The config files for ser2net and hostapd will now be copied to their correct location."
-  echo "If either of these packages are not installed, please install them and re-run this command."
-  sleep 1
-  echo "Copying /etc/conf/wconsole/ser2net.conf to /etc/ser2net.conf"
-  cp /etc/wconsole/conf/ser2net.conf /etc/ser2net.conf
-  sleep 1
-  echo "Copying /etc/wconsole/conf/hostapd.conf to /etc/hostapd.conf"
-  cp /etc/wconsole/conf/hostapd.conf /etc/hostapd.conf
-  sleep 1
-  echo "Config files copied."
-  sleep 1
-  echo "Config complete."
 }
 
 status () {
@@ -113,6 +136,13 @@ status () {
 
 }
 
+version () {
+    N=/etc/wconsole/$NAME
+        echo "Version: $N $VERSION" >&2
+        exit 1
+
+}
+
 case "$1" in
   on)
         wconsole_on
@@ -123,12 +153,11 @@ case "$1" in
   status)
         status
         ;;
-  install)
-        install
-        ;;
+  version)
+        version;;
   *)
         N=/etc/wconsole/$NAME
-        echo "Usage: $N {on|off|install|status}" >&2
+        echo "Usage: $N {on|off|status|version}" >&2
         exit 1
         ;;
 esac
