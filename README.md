@@ -14,81 +14,19 @@ To provide a wireless console serial port using your WLANPi, you will need:
  - A (compatible) USB to serial cable connected to one the other WLANPi USB port (e.g. Prolific Technology, Inc. PL2303 Serial Port)
  - WLANPi distribution v1.6.1 or later installed on the WLANPi (https://github.com/WLAN-Pi/wlanpi/releases)
 
-Before attempting to use Wi-Fi Console, you must ensure you have the correct software packages installed on your WLANPi. The packages used are:
+## Enabling Wi-Fi Console Mode
 
- - *isc-dhcp-server* (installed as part of the standard distribution)
- - *hostapd* (installed as part of the standard distribution)
- - *ufw*  (installed as part of the standard distribution)
- - *ser2net* (unlikely to be present until next WLANPi distribution mid/late 2019 - v1.7 onwards)
-
-Initially, do a check for the availability of the "ser2net" package on your WLANPi by accessing the WLANPi via SSH and running the following command: 
+To flip the WLANPi in to "Wi-Fi Console" mode, using the front panel menu system select the following options
 
 ```
- sudo apt list --installed | grep ser2net
-```
-Here is the type of output you may expect to see if/when it is installed:
-
-```
- root@wlanpi:/home/wlanpi# sudo apt list --installed | grep ser2net
-
- WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-
- ser2net/stable,now 2.10.1-1+b1 arm64 [installed]
+ Menu > Actions > W-Console > Confirm
 ```
 
-Assuming the ser2net package is missing from your WLANPi, install it as follows:
-
-1. Connect your WLANPi via the Ethernet port to a network with Internet access
-2. SSH to the WLANPi and login
-3. Execute the following commands:
-
-```
-    sudo apt-get update
-    sudo apt-get install ser2net
-```
-
-## Installation
-
-Once the required packages are installed, copy the gzipped archive in the [bundle folder](https://github.com/WLAN-Pi/wconsole/tree/master/bundle) in this github repo to the /etc directory of the WLANPi (e.g.using SFTP). Extract the files from the archive using the command:
-
-```
- cd /etc
- sudo tar xvfz wconsole-v0.04.tar.gz
-```
-
-Change to the newly created directory /etc/wconsole:
-
-```
- sudo cd /etc/wconsole
-```
-
-Installation is now complete. If you are using the native WLANPi front panel menu system to flip modes and activate the Wi-Fi console, you do not need to do anything else.
-
-# Background
-
-(It is possible to flip in to Wi-Fi console mode using the Linux CLI, but it is strongly recommended to use the native WLANPi front panel navigation menu)
-
-As there are quite a few networking changes we need to make for Wi-Fi Console to operate correctly, we need to flip the WLANPi in to a completely new mode of operation that uses a different network configuration. The 'wconsole_switcher' script is used to switch between the usual "classic" mode of operation and the "Wi-Fi Console" mode of operation. 
-
-When moving to the "Wi-Fi Console" mode, various configuration files are changed on the WLANPi, with the original networking files being preserved to allow restoration to the original ("classic" mode) configuration. 
-
-When moving back to the original "classic" mode, all changed files are restored to their original state. 
-
-When moving between modes, the WLANPi will reboot to ensure that all new network configuration starts cleanly. 
-
-## Enabling Wi-Fi Console Mode (Via CLI)
-
-To flip the WLANPi in to "Wi-Fi Console" mode, SSH to the WLANPi and execute the following command:
-
-```
- sudo /etc/wconsole/wconsole_switcher on
-```
-
-At this point, the WLANPi will reboot so that the new networking configuration will take effect. 
+At this point, the WLANPi will reboot so that the new networking configuration will take effect. Following the reboot, the "Wi-Fi Console" mode is reported on the WLANPi display.
 
 # Using Wi-Fi Console
 
-Following the WLANPi reboot, by default, an SSID of "wifi_console" will be available on channel 1. You can join the SSID with a wireless client (e.g. your laptop) using the default shared key: wifipros.
+Following the WLANPi reboot, by default, an SSID of "wifi_console" will be available on channel 1. You can join the SSID with a wireless client (e.g. your laptop) using the default shared key: wifipros
 
 Once you have joined the SSID, open a telnet session to the WLANPi at 192.168.42.1 using network port 9600. This will provide access to the serial console cable plugged in to the USB port, operating with a serial port configuration of 9600,8,N,1.
 
@@ -101,17 +39,7 @@ In addition to the serial port configuration on TCP 9600 the following ports are
 
 (If you wish to experiment yourself with the network port allocations, see the /etc/wconsole/conf/ser2net.conf file)
 
-## Exiting Wi-Fi Console Mode (via CLI)
-
-To switch out of "Wi-Fi Console" mode, SSH to the WLANPi using network address 192.168.42.1 (while connected to the Wi-Fi Console SSID, using standard port 22) and run the command: 
-
-```
- sudo /etc/wconsole/wconsole_switcher off
-```
-
-When this command is executed, the original ("classic" mode) networking configuration files will be restored and the WLANPi will reboot. After the reboot, the WLANPi will operatw as it did before the switch to "Wi-Fi Console" mode.
-
-## Configurations Options
+ ## Configurations Options
 
 It is very likely that you will not want to use this utility with the default shared key, channel and SSID. 
 
@@ -135,6 +63,37 @@ Next, flip the WLANPi back in to "Wi-Fi Console" mode as described in previous s
 
 (Note: if you make these changes while in "Wi-Fi Console" mode, they will not take effect. You must start in "classic" mode, make the updates, then switch to "Wi-Fi Console" mode)
 
-## Alternative (...and now recommended) Switching Option
 
-The [wlanpi-nanohat-oled](https://github.com/WLAN-Pi/wlanpi-nanohat-oled) project provides an easy option to enable/disable Wi-Fi Console mode via a front panel menu system. Take a look at the project page to find out more details. This method will become the default method from release v1.7 of the WLANPi image.
+# Legacy Options (Not Recommended For General Use)
+
+(It is possible to flip in to Wi-Fi console mode using the Linux CLI, but it is strongly recommended to use the native WLANPi front panel navigation menu)
+
+As there are quite a few networking changes we need to make for Wi-Fi Console to operate correctly, we need to flip the WLANPi in to a completely new mode of operation that uses a different network configuration. The 'wconsole_switcher' script is used to switch between the usual "classic" mode of operation and the "Wi-Fi Console" mode of operation. 
+
+When moving to the "Wi-Fi Console" mode, various configuration files are changed on the WLANPi, with the original networking files being preserved to allow restoration to the original ("classic" mode) configuration. 
+
+When moving back to the original "classic" mode, all changed files are restored to their original state. 
+
+When moving between modes, the WLANPi will reboot to ensure that all new network configuration starts cleanly. 
+
+## Enabling Wi-Fi Console Mode (Via CLI)
+
+To flip the WLANPi in to "Wi-Fi Console" mode, SSH to the WLANPi and execute the following command:
+
+```
+ sudo /etc/wconsole/wconsole_switcher on
+```
+
+At this point, the WLANPi will reboot so that the new networking configuration will take effect. 
+
+
+## Exiting Wi-Fi Console Mode (via CLI)
+
+To switch out of "Wi-Fi Console" mode, SSH to the WLANPi using network address 192.168.42.1 (while connected to the Wi-Fi Console SSID, using standard port 22) and run the command: 
+
+```
+ sudo /etc/wconsole/wconsole_switcher off
+```
+
+When this command is executed, the original ("classic" mode) networking configuration files will be restored and the WLANPi will reboot. After the reboot, the WLANPi will operatw as it did before the switch to "Wi-Fi Console" mode.
+
