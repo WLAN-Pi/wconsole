@@ -24,6 +24,16 @@ To flip the WLANPi in to "Wi-Fi Console" mode, using the front panel menu system
 
 At this point, the WLANPi will reboot so that the new networking configuration will take effect. Following the reboot, the "Wi-Fi Console" mode is reported on the WLANPi display.
 
+## Disabling Wi-Fi Console Mode
+
+To flip the WLANPi back to classic mode use the front panel menu system select the following options
+
+```
+ Menu > Actions > Classic Mode > Confirm
+```
+
+The WLANPi will reboot and start up in the default, classic mode.
+
 # Using Wi-Fi Console
 
 Following the WLANPi reboot, by default, an SSID of "wifi_console" will be available on channel 1. You can join the SSID with a wireless client (e.g. your laptop) using the default shared key: wifipros
