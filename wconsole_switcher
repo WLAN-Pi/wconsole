@@ -13,13 +13,16 @@
 #         (not during install)
 # v0.04 - 25th July 2019 - Updated to remove install option
 #                        - Added file checks before file copy/del operations
+# v0.05 - no notes
+# v0.06 - no notes
+# v0.07 - 26th January 2020 - added check for WLAN NIC AP mode support
 #
 
 set -e
 
 NAME=wconsole_switcher
 DESC="Script to switch wconsole on/off"
-VERSION=0.04
+VERSION=0.07
 STATUS_FILE="/etc/wconsole/wconsole.on"
 
 if [[ $EUID -ne 0 ]]; then
@@ -41,6 +44,16 @@ fi
 #
 ###############################################################################
 wconsole_on () {
+
+  # check if the WLAN NIC supports AP mode before switching
+  # iw list | awk '/Supported interface modes/, /Band/' | grep '\* AP'
+   AP_SUPPORT=`iw list | awk '/Supported interface modes/, /Band/' | grep '\* AP'` || true
+   if  [ -z "$WLAN_IF" ]; then
+     echo "Failed - AP Mode not supported by adapter."
+     exit 1
+  fi
+
+  
   echo "Enabling Wi-Fi console..."
   # Backup files
   cp /etc/default/isc-dhcp-server /etc/default/isc-dhcp-server.wcon
