@@ -48,7 +48,7 @@ wconsole_on () {
   # check if the WLAN NIC supports AP mode before switching
   # iw list | awk '/Supported interface modes/, /Band/' | grep '\* AP'
    AP_SUPPORT=`iw list | awk '/Supported interface modes/, /Band/' | grep '\* AP'` || true
-   if  [ -z "$WLAN_IF" ]; then
+   if  [ -z "$AP_SUPPORT" ]; then
      echo "Failed - AP Mode not supported by adapter."
      exit 1
   fi
