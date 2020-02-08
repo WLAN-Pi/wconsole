@@ -52,7 +52,7 @@ In addition to the serial port configuration on TCP 9600 the following ports are
 
  ## Multiple serial to USB adapters
 
-You can now use WLAN Pi with up to 8 USB to serial cables. All 4 baud rates are still available for each cable and the last digit of the TCP port matches the serial cable number (from 1 to 8):
+You can now use WLAN Pi with up to 8 USB to serial cables (via a US hub). All 4 baud rates are still available for each cable and the last digit of the TCP port matches the serial cable number (from 1 to 8):
 
  - First adapter uses ports 2401, 4801, 9601, 19201 (and also ports 2400, 4800, 9600, 19200 for backwards compatibility)
  - Second adapter uses ports 2402, 4802, 9602, 19202
