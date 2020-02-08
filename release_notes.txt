@@ -1,4 +1,10 @@
-V0.07
+V0.08
 -----
 
-Added detection of AP mode to switcher utility to prevent wconsole being selected if wireless NIC chipset does not support AP mode. 
+Support added for:
+
+1. Cisco USB console cables
+2. Up to 8 USB to serial adapters or 8 Cisco USB console cables
+
+(Thanks to Jiri Brejcha for this superb update)
+
