@@ -84,10 +84,11 @@ wconsole_on () {
   ln -s /etc/wconsole/conf/ser2net.conf /etc/ser2net.conf
   ln -s /etc/wconsole/conf/hostapd.conf /etc/hostapd.conf
   # Open up FW 
-  ufw allow 2400/tcp
-  ufw allow 4800/tcp
-  ufw allow 9600/tcp
-  ufw allow 19200/tcp
+  ufw allow 2400:2408/tcp
+  ufw allow 4800:4808/tcp
+  ufw allow 9600:9608/tcp
+  ufw allow 19200:19208/tcp
+  ufw allow 2000:2008/tcp
   # Signal that wconsole active
   touch $STATUS_FILE
   echo "WLANPi will now reboot"
@@ -126,10 +127,11 @@ wconsole_off () {
     cp /etc/hostapd.conf.wcon /etc/hostapd.conf
   fi
   # Close ports on FW
-  ufw delete allow 2400/tcp
-  ufw delete allow 4800/tcp
-  ufw delete allow 9600/tcp
-  ufw delete allow 19200/tcp
+  ufw delete allow 2400:2408/tcp
+  ufw delete allow 4800:4808/tcp
+  ufw delete allow 9600:9608/tcp
+  ufw delete allow 19200:19208/tcp
+  ufw delete allow 2000:2008/tcp
   echo "WLANPi will now reboot"
   if [ -e "$STATUS_FILE" ]; then
     rm $STATUS_FILE
