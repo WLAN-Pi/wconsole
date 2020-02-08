@@ -59,6 +59,8 @@ You can now use WLAN Pi with up to 8 USB to serial cables. All 4 baud rates are 
  - ...
  - Eight adapter uses ports 2408, 4808, 9608, 19208
 
+Example: To connect to the third adapter at baud rate 9600, telnet to WLAN Pi's IP address on TCP port 9603. 
+
 ![WLAN Pi with multiple adapters](/images/Wi-Fi-Console-with-multiple-adapters.jpg)
 ![WLAN Pi connected to multiple appliances](/images/Console-cables-plugged-into-appliances.png)
 
@@ -74,6 +76,8 @@ To access the Cisco USB console sessions, simply telnet to the WLAN Pi IP addres
  - Second USB cable uses port 2002
  - ...
  - Eight USB cable uses port 2008
+
+Example: To connect to the second USB console cable, telnet to WLAN Pi's IP address on TCP port 2002.
 
  ## Configurations Options
 
