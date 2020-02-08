@@ -54,10 +54,10 @@ In addition to the serial port configuration on TCP 9600 the following ports are
 
 You can now use WLAN Pi with up to 8 USB to serial cables. All 4 baud rates are still available for each cable and the last digit of the TCP port matches the serial cable number (from 1 to 8):
 
-First adapter uses ports 2401, 4801, 9601, 19201 (and also ports 2400, 4800, 9600, 19200 for backwards compatibility)
-Second adapter uses ports 2402, 4802, 9602, 19202
-...
-Eight adapter uses ports 2408, 4808, 9608, 19208
+ - First adapter uses ports 2401, 4801, 9601, 19201 (and also ports 2400, 4800, 9600, 19200 for backwards compatibility)
+ - Second adapter uses ports 2402, 4802, 9602, 19202
+ - ...
+ - Eight adapter uses ports 2408, 4808, 9608, 19208
 
 ![WLAN Pi with multiple adapters](/images/Wi-Fi-Console-with-multiple-adapters.jpg)
 ![WLAN Pi connected to multiple appliances](/images/Console-cables-plugged-into-appliances.png)
@@ -70,10 +70,10 @@ If you are a Cisco shop you may already have a box of unused Cisco USB console c
 
 To access the Cisco USB console sessions, simply telnet to the WLAN Pi IP address and use one of these ports. The last digit matches the USB console cable number (from 1 to 8):
 
-First USB cable uses port 2001
-Second USB cable uses port 2002
-...
-Eight USB cable uses port 2008
+ - First USB cable uses port 2001
+ - Second USB cable uses port 2002
+ - ...
+ - Eight USB cable uses port 2008
 
  ## Configurations Options
 
