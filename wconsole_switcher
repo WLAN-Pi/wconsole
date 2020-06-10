@@ -16,14 +16,15 @@
 # v0.05 - no notes
 # v0.06 - no notes
 # v0.07 - 26th January 2020 - added check for WLAN NIC AP mode support
-#
+# v0.08 - 8th Feb 2020 - added support for Cisco USB cable
+# v0.09 - 10th May 2020 - added support for new mode state file
 
 set -e
 
 NAME=wconsole_switcher
 DESC="Script to switch wconsole on/off"
 VERSION=0.07
-STATUS_FILE="/etc/wconsole/wconsole.on"
+STATUS_FILE="/etc/wlanpi-state"
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -44,6 +45,14 @@ fi
 #
 ###############################################################################
 wconsole_on () {
+
+  # check what state the WLAN Pi is in
+  PI_STATUS=`cat $STATUS_FILE | grep 'classic'` || true
+  if  [ -z "$PI_STATUS" ]; then
+     echo "Failed - WLAN Pi is not in classic mode."
+     exit 1
+  fi
+
 
   # check if the WLAN NIC supports AP mode before switching
   # iw list | awk '/Supported interface modes/, /Band/' | grep '\* AP'
@@ -90,7 +99,7 @@ wconsole_on () {
   ufw allow 19200:19208/tcp
   ufw allow 2000:2008/tcp
   # Signal that wconsole active
-  touch $STATUS_FILE
+  echo "wconsole" > $STATUS_FILE
   echo "WLANPi will now reboot"
   sleep 1
   reboot
@@ -108,6 +117,14 @@ wconsole_on () {
 #
 ###############################################################################
 wconsole_off () {
+
+  # check what state the WLAN Pi is in
+  PI_STATUS=`cat $STATUS_FILE | grep 'wconsole'` || true
+  if  [ -z "$PI_STATUS" ]; then
+     echo "Failed - WLAN Pi is not in wconsole mode."
+     exit 1
+  fi
+
   echo "Disabling Wi-Fi console..."
   # Remove sym links to wconsole
   unlink /etc/default/isc-dhcp-server
@@ -133,19 +150,18 @@ wconsole_off () {
   ufw delete allow 19200:19208/tcp
   ufw delete allow 2000:2008/tcp
   echo "WLANPi will now reboot"
-  if [ -e "$STATUS_FILE" ]; then
-    rm $STATUS_FILE
-  fi
+  echo "classic" > $STATUS_FILE
   sleep 1
   reboot
 }
 
 status () {
-  if [ -e "$STATUS_FILE" ]; then
-    echo "wconsole is currently enabled"
+  PI_STATUS=`cat $STATUS_FILE | grep 'wconsole'` || true
+  if  [ -z "$PI_STATUS" ]; then
+    echo "wconsole is currently disabled"
     exit 0
   else
-    echo "wconsole is currently disabled"
+    echo "wconsole is currently enabled"
     exit 0
   fi
 
