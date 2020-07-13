@@ -65,9 +65,24 @@ wconsole_on () {
   
   echo "Enabling Wi-Fi console..."
   # Backup files
-  cp /etc/default/isc-dhcp-server /etc/default/isc-dhcp-server.wcon
+  if [ -e /etc/default/isc-dhcp-server ]; then
+    cp /etc/default/isc-dhcp-server /etc/default/isc-dhcp-server.wcon
+  fi
+  if [ -e /etc/dhcp/dhcpd.conf ]; then
   cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.wcon
-  cp /etc/network/interfaces /etc/network/interfaces.wcon
+  fi
+  if [ -e /etc/network/interfaces ]; then
+    cp /etc/network/interfaces /etc/network/interfaces.wcon
+  fi
+  if [ -e /etc/sysctl.conf ]; then
+    cp /etc/sysctl.conf /etc/sysctl.conf.wcon
+  fi
+  if [ -e /etc/default/ufw ]; then
+    cp /etc/default/ufw /etc/default/ufw.wcon
+  fi
+  if [ -e /etc/ufw/before.rules ]; then
+  cp /etc/ufw/before.rules /etc/ufw/before.rules.wcon
+  fi
   # These files may or may not exist
   if [ -e /etc/ser2net.conf ]; then
     cp /etc/ser2net.conf /etc/ser2net.conf.wcon
@@ -75,10 +90,15 @@ wconsole_on () {
   if [ -e /etc/hostapd.conf ]; then
     cp /etc/hostapd.conf /etc/hostapd.conf.wcon
   fi
+
   # Remove existing files
-  rm /etc/default/isc-dhcp-server
-  rm /etc/dhcp/dhcpd.conf
-  rm /etc/network/interfaces
+  rm -f /etc/default/isc-dhcp-server
+  rm -f /etc/dhcp/dhcpd.conf
+  rm -f /etc/network/interfaces
+  rm -f /etc/sysctl.conf
+  rm -f /etc/default/ufw
+  rm -f /etc/ufw/before.rules
+
   # These files may or may not exist
   if [ -e /etc/ser2net.conf ]; then
     rm /etc/ser2net.conf
@@ -86,21 +106,28 @@ wconsole_on () {
   if [ -e /etc/hostapd.conf ]; then
     rm /etc/hostapd.conf
   fi
+
   # Link to files in wconsole
   ln -s /etc/wconsole/default/isc-dhcp-server /etc/default/isc-dhcp-server 
   ln -s /etc/wconsole/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
   ln -s /etc/wconsole/network/interfaces /etc/network/interfaces
   ln -s /etc/wconsole/conf/ser2net.conf /etc/ser2net.conf
   ln -s /etc/wconsole/conf/hostapd.conf /etc/hostapd.conf
-  # Open up FW 
+  ln -s /etc/wconsole/sysctl/sysctl.conf /etc/sysctl.conf
+  ln -s /etc/wconsole/default/ufw /etc/default/ufw
+  ln -s /etc/wconsole/ufw/before.rules /etc/ufw/before.rules
+
+  # Open up console ports on FW 
   ufw allow 2400:2408/tcp
   ufw allow 4800:4808/tcp
   ufw allow 9600:9608/tcp
   ufw allow 19200:19208/tcp
+  ufw allow 11520:11528/tcp
   ufw allow 2000:2008/tcp
+
   # Signal that wconsole active
   echo "wconsole" > $STATUS_FILE
-  echo "WLANPi will now reboot"
+  echo "WLAN Pi will now reboot"
   sleep 1
   reboot
 }
@@ -132,10 +159,17 @@ wconsole_off () {
   unlink /etc/network/interfaces
   unlink /etc/ser2net.conf
   unlink /etc/hostapd.conf
+  unlink /etc/sysctl.conf
+  unlink /etc/default/ufw
+  unlink /etc/ufw/before.rules
+
   # Restore old files
   cp /etc/default/isc-dhcp-server.wcon /etc/default/isc-dhcp-server
   cp /etc/dhcp/dhcpd.conf.wcon /etc/dhcp/dhcpd.conf
   cp /etc/network/interfaces.wcon /etc/network/interfaces
+  cp /etc/sysctl.conf.wcon /etc/sysctl.conf
+  cp /etc/default/ufw.wcon /etc/default/ufw
+  cp /etc/ufw/before.rules.wcon /etc/ufw/before.rules
   # These files may or may not exist
   if [ -e /etc/ser2net.conf.wcon ]; then
     cp /etc/ser2net.conf.wcon /etc/ser2net.conf
@@ -149,7 +183,8 @@ wconsole_off () {
   ufw delete allow 9600:9608/tcp
   ufw delete allow 19200:19208/tcp
   ufw delete allow 2000:2008/tcp
-  echo "WLANPi will now reboot"
+  ufw delete allow 11520:11528/tcp
+  echo "WLAN Pi will now reboot"
   echo "classic" > $STATUS_FILE
   sleep 1
   reboot
