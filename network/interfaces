@@ -1,18 +1,10 @@
-source /etc/network/interfaces.d/*
-
-# Wired adapter #1
-allow-hotplug eth0
-no-auto-down eth0
-iface eth0 inet dhcp
-
 # Wireless adapter #1
 allow-hotplug wlan0
 iface wlan0 inet static
- address 192.168.42.1
- netmask 255.255.255.224
- network 192.168.42.0
- gateway 192.168.42.30
- hostapd /etc/hostapd.conf
+address 192.168.42.1
+netmask 255.255.255.224
+dns-nameservers 8.8.8.8 8.8.4.4
+hostapd /etc/hostapd.conf
 
 # USB interface
 allow-hotplug usb0
@@ -20,7 +12,6 @@ iface usb0 inet static
 address 169.254.42.1
 netmask 255.255.255.224
 
-# Local loopback
-auto lo
-iface lo inet loopback
-
+# Wired ethernet
+auto eth0
+iface eth0 inet dhcp
