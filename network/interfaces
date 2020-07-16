@@ -12,6 +12,7 @@ iface usb0 inet static
 address 169.254.42.1
 netmask 255.255.255.224
 
+#WLAN Pi now uses NetworkManager to manage eth0, eth0 section has to be commented out here to prevent 2 IPs from being assigned to eth0 and other conflicts
 # Wired ethernet
-auto eth0
-iface eth0 inet dhcp
+#auto eth0
+#iface eth0 inet dhcp
