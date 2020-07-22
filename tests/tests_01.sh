@@ -6,8 +6,9 @@
 #
 
 MODULE=wconsole
-VERSION=1.0
+VERSION=1.01
 COMMENTS="Inital test script"
+SCRIPT_NAME=$(basename $0)
 
 # Tests log file
 LOG_FILE="test_results.log"
@@ -106,11 +107,11 @@ case "$1" in
         echo ""
         ;;
   -h)
-        echo "Usage: tests_01.sh [ -h | -v ]"
+        echo "Usage: $SCRIPT_NAME [ -h | -v ]"
         echo ""
-        echo "  tests_01.sh -v : script version"
-        echo "  tests_01.sh -h : script help"
-        echo "  stests_01.sh   : run test suite"
+        echo "  $SCRIPT_NAME -v : script version"
+        echo "  $SCRIPT_NAME -h : script help"
+        echo "  $SCRIPT_NAME   : run test suite"
         echo ""
         exit 0
         ;;
