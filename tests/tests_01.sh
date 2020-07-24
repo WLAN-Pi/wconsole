@@ -6,8 +6,8 @@
 #
 
 MODULE=wconsole
-VERSION=1.01
-COMMENTS="Inital test script"
+VERSION=1.1
+COMMENTS="wconsole test suite to verify files & processes"
 SCRIPT_NAME=$(basename $0)
 
 # Tests log file
