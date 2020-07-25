@@ -1,4 +1,5 @@
-#! /bin/bash
+#!/bin/bash
+
 #
 # wconsole_switcher - script to switch wconsole on/off
 #                     (usually called from the WLANPi menu system)    
