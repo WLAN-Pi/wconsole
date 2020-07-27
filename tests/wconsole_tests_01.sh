@@ -9,7 +9,7 @@
 # User configurable vars
 ##########################
 MODULE=wconsole
-VERSION=1.2
+VERSION=1.3
 COMMENTS="wconsole test suite to verify files & processes"
 SCRIPT_NAME=$(basename $0)
 
@@ -81,6 +81,9 @@ Test rig description:
   2. Supported wireless NIC card on one of USB ports
   3. WLAN Pi is switched in to wconsole mode
   4. wconsole config files are default
+  5. Run tests by joining SSID 'wifi_console' (key = 'wifipros' ) 
+  6. SSH to 192.168.42.1 and run this test script:
+      /etc/wconsole/tests/wconsole_tests.01.sh
 
 =======================================================" | tee $LOG_FILE
 
@@ -111,6 +114,7 @@ run_tests () {
   file_exists "/etc/wconsole/dhcp/dhcpd.conf"
   file_exists "/etc/wconsole/network/interfaces"
   file_exists "/etc/wconsole/sysctl/sysctl.conf"
+  file_exists "/etc/wconsole/ufw/before.rules"
   file_exists "/usr/bin/wconsole_switcher"
 
   # check file symbolic links exist
@@ -178,6 +182,7 @@ case "$1" in
         echo "Test script version: $VERSION"
         echo $COMMENTS
         echo ""
+        exit 0
         ;;
   -h)
         echo "Usage: $SCRIPT_NAME [ -h | -v ]"
@@ -190,11 +195,12 @@ case "$1" in
         ;;
   *)
         run_tests
-        exit 0
+        exit $tests_failed
         ;;
 esac
 
-exit 0
+# should never reach here, but just in case....
+exit 1
 
 << 'HOWTO'
 
