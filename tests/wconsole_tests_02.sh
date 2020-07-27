@@ -9,7 +9,7 @@
 # User configurable vars
 ##########################
 MODULE=wconsole
-VERSION=1.0
+VERSION=1.01
 COMMENTS="wconsole test suite to verify clean-up when swtched out of wconsole mode"
 SCRIPT_NAME=$(basename $0)
 
@@ -216,6 +216,7 @@ Test Utility Documentation
  file_exists: call pass() if file name passed via $1 exists, else call fail()
  dir_exists: call pass() if dir name passed via $1 exists, else call fail()
  symlink_exists: call pass() if file name passed via $1 is a symlink, else call fail()
+ symlink_not: call pass() if file name passed via $1 is not symlink, else call fail()
  check_process: call pass() if process name passed via $1 is running, else call fail()
  check_systemctl: call pass() if service name passed via $1 is running, else call fail()
 

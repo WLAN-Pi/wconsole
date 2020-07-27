@@ -9,7 +9,7 @@
 # User configurable vars
 ##########################
 MODULE=wconsole
-VERSION=1.3
+VERSION=1.31
 COMMENTS="wconsole test suite to verify files & processes"
 SCRIPT_NAME=$(basename $0)
 
@@ -66,6 +66,7 @@ check_not () { if [[ ! $1 ]]; then pass; else fail; fi; }
 file_exists ()    { info "Checking file exists: $1"; if [[ -e $1 ]]; then pass; else fail; fi; }
 dir_exists ()     { info "Checking directory exists: $1"; if [[ -d $1 ]]; then pass; else fail; fi; }
 symlink_exists () { info "Checking symlink exists: $1"; if [[ -L $1 ]]; then pass; else fail; fi; }
+symlink_not () { info "Checking file is not symlink: $1"; if [[ ! -L $1 ]]; then pass; else fail; fi;  }
 check_process ()  { info "Checking process running: $1"; if [[ `pgrep $1` ]]; then pass; else fail; fi; }
 check_systemctl () { info "Checking systemctl running: $1"; if [[ `systemctl status $1 | grep 'active (running)'` ]]; then pass; else fail; fi; }
 
@@ -226,6 +227,7 @@ Test Utility Documentation
  file_exists: call pass() if file name passed via $1 exists, else call fail()
  dir_exists: call pass() if dir name passed via $1 exists, else call fail()
  symlink_exists: call pass() if file name passed via $1 is a symlink, else call fail()
+ symlink_not: call pass() if file name passed via $1 is not symlink, else call fail()
  check_process: call pass() if process name passed via $1 is running, else call fail()
  check_systemctl: call pass() if service name passed via $1 is running, else call fail()
 
