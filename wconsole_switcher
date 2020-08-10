@@ -123,6 +123,7 @@ wconsole_on () {
   ufw allow 4800:4808/tcp
   ufw allow 9600:9608/tcp
   ufw allow 19200:19208/tcp
+  ufw allow 38400:38408/tcp
   ufw allow 11520:11528/tcp
   ufw allow 2000:2008/tcp
 
@@ -183,6 +184,7 @@ wconsole_off () {
   ufw delete allow 4800:4808/tcp
   ufw delete allow 9600:9608/tcp
   ufw delete allow 19200:19208/tcp
+  ufw delete allow 38400:38408/tcp
   ufw delete allow 2000:2008/tcp
   ufw delete allow 11520:11528/tcp
   echo "WLAN Pi will now reboot"
