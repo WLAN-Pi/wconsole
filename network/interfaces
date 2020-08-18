@@ -12,7 +12,7 @@ allow-hotplug wlan0
 iface wlan0 inet static
 address 192.168.42.1
 netmask 255.255.255.224
-dns-nameservers 8.8.8.8 8.8.4.4
+dns-nameservers 8.8.8.8 208.67.222.222
 hostapd /etc/hostapd.conf
 
 # USB interface
